@@ -2,6 +2,7 @@ let food = [];
 let time = 0;
 let organisms = [];
 let generation = 0;
+let speedMod = 10;
 
 for (let i = 0; i < 5; i++) {
     food.push([
@@ -13,12 +14,13 @@ for (let i = 0; i < 5; i++) {
 function newPop() {
     for (let i = 0; i < 10; i++) {
         organisms.push({
-            x: 200,
-            y: 200,
+            x: Math.floor(Math.random() * 400),
+            y: Math.floor(Math.random() * 400),
             allele1: Math.floor(Math.random() * 2),
             allele2: Math.floor(Math.random() * 2),
             food: 0,
             destination: [0, 0],
+            s: Math.random()
         });
     }
 }
@@ -85,7 +87,7 @@ function distance(x, y, x1, y1) {
 
 function nearestFood(x, y) {
     let index = 0;
-    let closest = 0;
+    let closest = distance(x, y, food[0][0], food[0][1]);
     for (let i = 0; i < food.length; i++) {
         let dist = distance(x, y, food[i][0], food[i][1]);
         if (dist < closest) {
@@ -110,17 +112,22 @@ function draw() {
         time / 30
     )}s`;
     document.getElementById("gen").innerText = `Generation: ${generation}`;
+    const a = alleles();
+    document.getElementById("a_dom").innerText = `Dominant Alleles: ${a.dominant}`
+    document.getElementById("a_rec").innerText = `Recessive Alleles: ${a.recessive}`
     background(220);
 
     // spawn new food + draw food
     push();
     fill(255, 204, 0);
-
-    if (time % 30 == 0) {
-        food.push([
-            Math.floor(Math.random() * 400),
-            Math.floor(Math.random() * 400),
-        ]);
+    
+    if (time % 20 == 0) {
+        for (let i = 0; i < 10; i++) {
+            food.push([
+                Math.floor(Math.random() * 400),
+                Math.floor(Math.random() * 400),
+            ]);
+        }
     }
 
     for (const f of food) {
@@ -133,10 +140,6 @@ function draw() {
     let direction = [1, -1];
     for (const o of organisms) {
         let speed = o.allele1 == 1 || o.allele2 == 1 ? 0.5 : 0.1;
-        if (time % 1 == 0) {
-            o.x += 10 * speed * direction[Math.floor(Math.random() * 2)];
-            o.y += 10 * speed * direction[Math.floor(Math.random() * 2)];
-        }
 
         if (o.x < 0) o.x = 0;
         if (o.y < 0) o.y = 0;
@@ -151,6 +154,41 @@ function draw() {
         }
         o.destination = nearestFood(o.x, o.y);
         //text(`speed: ${Math.round(o.speed * 100)}`, o.x, o.y);
+        let movement = speedMod * speed * o.s;
+        console.log(movement)
+        if (o.x < o.destination[0]) {
+            if (o.x > o.destination[0] - movement) {
+                o.x = o.destination[0]
+            }
+            else {
+                o.x += movement
+            }
+        }
+        else if (o.x > o.destination[0]) {
+            if (o.x < o.destination[0] + movement) {
+                o.x = o.destination[0]
+            }
+            else {
+                o.x -= movement
+            }
+        }
+        if (o.y < o.destination[1]) {
+            if (o.y > o.destination[1] - movement) {
+                o.y = o.destination[1]
+            }
+            else {
+                o.y += movement
+            }
+        }
+        else if (o.y > o.destination[1]) {
+            if (o.y < o.destination[1] + movement) {
+                o.y = o.destination[1]
+            }
+            else {
+                o.y -= movement
+            }
+        }
+
     }
     time++;
 }
