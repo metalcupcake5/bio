@@ -3,19 +3,21 @@ let time = 0;
 let organisms = [];
 let generation = 0;
 let speedMod = 10;
+let sizeX = 600;
+let sizeY = 600;
 
 for (let i = 0; i < 5; i++) {
     food.push([
-        Math.floor(Math.random() * 400),
-        Math.floor(Math.random() * 400),
+        Math.floor(Math.random() * sizeX),
+        Math.floor(Math.random() * sizeY),
     ]);
 }
 
 function newPop() {
     for (let i = 0; i < 10; i++) {
         organisms.push({
-            x: Math.floor(Math.random() * 400),
-            y: Math.floor(Math.random() * 400),
+            x: Math.floor(Math.random() * sizeX),
+            y: Math.floor(Math.random() * sizeY),
             allele1: Math.floor(Math.random() * 2),
             allele2: Math.floor(Math.random() * 2),
             food: 0,
@@ -102,7 +104,7 @@ function nearestFood(x, y) {
 
 function setup() {
     newPop();
-    createCanvas(400, 400);
+    createCanvas(sizeX, sizeY);
     frameRate(30);
 }
 
@@ -124,8 +126,8 @@ function draw() {
     if (time % 20 == 0) {
         for (let i = 0; i < 10; i++) {
             food.push([
-                Math.floor(Math.random() * 400),
-                Math.floor(Math.random() * 400),
+                Math.floor(Math.random() * sizeX),
+                Math.floor(Math.random() * sizeY),
             ]);
         }
     }
@@ -143,8 +145,8 @@ function draw() {
 
         if (o.x < 0) o.x = 0;
         if (o.y < 0) o.y = 0;
-        if (o.x > 400) o.x = 400;
-        if (o.y > 400) o.y = 400;
+        if (o.x > sizeX) o.x = sizeX;
+        if (o.y > sizeY) o.y = sizeY;
         circle(o.x, o.y, 10);
         for (let i = 0; i < food.length; i++) {
             if (distance(o.x, o.y, food[i][0], food[i][1]) < 5) {
@@ -153,7 +155,7 @@ function draw() {
             }
         }
         o.destination = nearestFood(o.x, o.y);
-        //text(`speed: ${Math.round(o.speed * 100)}`, o.x, o.y);
+        text(o.food, o.x, o.y);
         let movement = speedMod * speed * o.s;
         console.log(movement)
         if (o.x < o.destination[0]) {
