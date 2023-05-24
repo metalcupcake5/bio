@@ -23,23 +23,47 @@ function newPop() {
     }
 }
 
-function reproduce(p1, p2, type = 0) {
+function mate(p1, p2, type = 0) {
     let child = {
         x: 200,
         y: 200,
         allele1: 0,
         allele2: 0,
         food: 0,
+        destination: [0, 0],
     };
-    //hardy weinberg
-    if (type == 0) {
-        child.allele1 =
-            Math.floor(Math.random() * 2) == 0 ? p1.allele1 : p2.allele1;
-        child.allele2 =
-            Math.floor(Math.random() * 2) == 0 ? p1.allele2 : p2.allele2;
-    }
+    child.allele1 =
+        Math.floor(Math.random() * 2) == 0 ? p1.allele1 : p2.allele1;
+    child.allele2 =
+        Math.floor(Math.random() * 2) == 0 ? p1.allele2 : p2.allele2;
 
     return child;
+}
+
+function reproduce(type = 0) {
+    let parentGen = [...organisms];
+    let newGen = [];
+    // hardy weinberg
+    if (type == 0) {
+        while (parentGen.length > 0) {
+            let p1 = parentGen.splice(
+                Math.floor(Math.random() * parentGen.length),
+                1
+            )[0];
+            let p2 = parentGen.splice(
+                Math.floor(Math.random() * parentGen.length),
+                1
+            )[0];
+            newGen.push(reproduce(p1, p2), reproduce(p1, p2));
+        }
+        organisms = newGen;
+    }
+
+    // natural selection
+    if (type == 1) {
+        parentGen = parentGen.filter(o => o.food > 0)
+        parentGen.sort((a, b) => b.food - a.food);
+    }
 }
 
 function alleles() {
