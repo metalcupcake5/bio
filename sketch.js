@@ -18,6 +18,7 @@ function newPop() {
             allele1: Math.floor(Math.random() * 2),
             allele2: Math.floor(Math.random() * 2),
             food: 0,
+            destination: [0, 0],
         });
     }
 }
@@ -62,10 +63,10 @@ function nearestFood(x, y) {
     let index = 0;
     let closest = 0;
     for (let i = 0; i < food.length; i++) {
-        let distance = distance(x, y, f[0], f[1]);
-        if (distance < closest) {
+        let dist = distance(x, y, food[i][0], food[i][1]);
+        if (dist < closest) {
             index = i;
-            closest = distance;
+            closest = dist;
         }
     }
     return food[index];
@@ -121,8 +122,10 @@ function draw() {
         for (let i = 0; i < food.length; i++) {
             if (distance(o.x, o.y, food[i][0], food[i][1]) < 5) {
                 food.splice(i, 1);
+                o.food++;
             }
         }
+        o.destination = nearestFood(o.x, o.y);
         //text(`speed: ${Math.round(o.speed * 100)}`, o.x, o.y);
     }
     time++;
