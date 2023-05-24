@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    </head>
+    <body>
+        <main class="flex">
+            <div class="data">
+                <span id="time">Time Elapsed: 0s</span>
+                <span id="gen">Generation: 0</span>
+                <div>
+                    <input
+                        type="radio"
+                        id="hw"
+                        name="type"
+                        value="hw"
+                        checked />
+                    <label for="hw">hardy weinberg</label>
+                </div>
+                <div>
+                    <input
+                        type="radio"
+                        id="evolution"
+                        name="type"
+                        value="evolution" />
+                    <label for="evolution">evolution</label>
+                </div>
+
+                <button>switch evolution type</button>
+            </div>
+            <script src="sketch.js"></script>
+        </main>
+    </body>
+    <style>
+        .flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</html>
