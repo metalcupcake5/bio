@@ -7,6 +7,8 @@ let speedMod = 10;
 let sizeX = 600;
 let sizeY = 600;
 let reproductionType = 0;
+let alleleHistory = [];
+let chart;
 
 function reset() {
     food = [];
@@ -132,8 +134,38 @@ function nearestFood(x, y) {
 
 function setup() {
     reset();
-    createCanvas(sizeX, sizeY);
+    const canvas = createCanvas(sizeX, sizeY);
+    canvas.parent("canvas");
     frameRate(30);
+
+    const a = alleles();
+    const ctx = document.getElementById("chart");
+
+    chart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [0],
+            datasets: [
+                {
+                    label: "dominant",
+                    data: [a.dominant],
+                    borderWidth: 1,
+                },
+                {
+                    label: "recessive",
+                    data: [a.recessive],
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
 }
 
 function draw() {
@@ -227,6 +259,11 @@ function draw() {
         console.log(reproductionType);
         generation++;
         time = 0;
+        const a = alleles();
+        chart.data.datasets[0].data.push(a.dominant);
+        chart.data.datasets[1].data.push(a.recessive);
+        chart.data.labels.push(generation);
+        chart.update();
     }
 }
 
@@ -242,4 +279,9 @@ function switchEvolutionType() {
             "Reproduction Type: Natural Selection";
     }
     reset();
+    chart.data.labels = [0];
+    const a = alleles();
+    chart.data.datasets[0].data = [a.dominant];
+    chart.data.datasets[1].data = [a.recessive];
+    chart.update();
 }

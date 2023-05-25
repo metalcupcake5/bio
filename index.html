@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body>
         <main class="flex">
@@ -33,8 +34,11 @@
                 <span id="a_rec"></span>
                 <span id="reproType">Reproduction Type: Hardy Weinberg</span>
             </div>
+            <div id="canvas"></div>
+            <div class="chart"><canvas id="chart"></canvas></div>
             <script src="sketch.js"></script>
         </main>
+        
     </body>
     <style>
         .flex {
@@ -46,6 +50,10 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+
+        .chart {
+            width: 400px;
         }
     </style>
 </html>
