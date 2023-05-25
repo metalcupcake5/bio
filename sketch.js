@@ -6,15 +6,19 @@ let generation = 0;
 let speedMod = 10;
 let sizeX = 600;
 let sizeY = 600;
+let reproductionType = 0;
 
-for (let i = 0; i < 5; i++) {
-    food.push([
-        Math.floor(Math.random() * sizeX),
-        Math.floor(Math.random() * sizeY),
-    ]);
-}
-
-function newPop() {
+function reset() {
+    food = [];
+    generation = 0;
+    time = 0;
+    organisms = [];
+    for (let i = 0; i < 5; i++) {
+        food.push([
+            Math.floor(Math.random() * sizeX),
+            Math.floor(Math.random() * sizeY),
+        ]);
+    }
     for (let i = 0; i < totalOrganisms; i++) {
         organisms.push({
             x: Math.floor(Math.random() * sizeX),
@@ -60,7 +64,7 @@ function reproduce(type = 0) {
             ]);
         }
 
-        while (parentGen.length > 0) {
+        while (newGen.length < totalOrganisms) {
             console.log("reproducing");
             let p1 = parentGen.splice(
                 Math.floor(Math.random() * parentGen.length),
@@ -72,14 +76,25 @@ function reproduce(type = 0) {
             )[0];
             newGen.push(mate(p1, p2), mate(p1, p2));
         }
-        organisms = newGen;
     }
 
     // natural selection
     if (type == 1) {
         parentGen = parentGen.filter((o) => o.food > 0);
         parentGen.sort((a, b) => b.food - a.food);
+        let highest = parentGen[0].food;
+        let lowest = parentGen[parentGen.length - 1].food;
+        parentGen = parentGen.filter(
+            (o) => o.food > Math.floor(lowest + (highest - lowest) / 2)
+        );
+        while (newGen.length < totalOrganisms) {
+            console.log("reproducing");
+            let p1 = parentGen[Math.floor(Math.random() * parentGen.length)];
+            let p2 = parentGen[Math.floor(Math.random() * parentGen.length)];
+            newGen.push(mate(p1, p2), mate(p1, p2));
+        }
     }
+    organisms = newGen;
 }
 
 function alleles() {
@@ -115,7 +130,7 @@ function nearestFood(x, y) {
 // drawing stuff starts here
 
 function setup() {
-    newPop();
+    reset();
     createCanvas(sizeX, sizeY);
     frameRate(30);
 }
@@ -207,8 +222,23 @@ function draw() {
     time++;
     document.getElementById("gen").innerText = `Generation: ${generation}`;
     if (Math.floor(time / 30) >= 10) {
-        reproduce();
+        reproduce(reproductionType);
+        console.log(reproductionType);
         generation++;
         time = 0;
     }
+}
+
+function switchEvolutionType() {
+    let hwRadio = document.getElementById("hw").checked;
+    if (hwRadio) {
+        reproductionType = 0;
+        document.getElementById("reproType").innerText =
+            "Reproduction Type: Hardy Weinberg";
+    } else {
+        reproductionType = 1;
+        document.getElementById("reproType").innerText =
+            "Reproduction Type: Natural Selection";
+    }
+    reset();
 }
