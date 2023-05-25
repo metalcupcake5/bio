@@ -1,7 +1,7 @@
 let food = [];
 let time = 0;
 let organisms = [];
-let totalOrganisms = 10;
+let totalOrganisms = 30;
 let generation = 0;
 let speedMod = 10;
 let sizeX = 600;
@@ -41,10 +41,11 @@ function mate(p1, p2, type = 0) {
         alleles: [],
         food: 0,
         destination: [0, 0],
-        s: Math.random(),
+        s: 0,
     };
     child.alleles.push(p1.alleles[Math.floor(Math.random() * 2)]);
     child.alleles.push(p2.alleles[Math.floor(Math.random() * 2)]);
+    child.s = Math.random() < 0.5 ? p1.s : p2.s;
     //child.s += Math.random() <= 0.5 ? p1.s : p2.s;
     return child;
 }
@@ -115,6 +116,7 @@ function distance(x, y, x1, y1) {
 
 function nearestFood(x, y) {
     let index = 0;
+    if (food.length < 1) return [x, y];
     let closest = distance(x, y, food[0][0], food[0][1]);
     for (let i = 0; i < food.length; i++) {
         let dist = distance(x, y, food[i][0], food[i][1]);
