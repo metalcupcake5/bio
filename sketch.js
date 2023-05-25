@@ -23,8 +23,10 @@ function reset() {
         organisms.push({
             x: Math.floor(Math.random() * sizeX),
             y: Math.floor(Math.random() * sizeY),
-            allele1: Math.floor(Math.random() * 2),
-            allele2: Math.floor(Math.random() * 2),
+            alleles: [
+                Math.floor(Math.random() * 2),
+                Math.floor(Math.random() * 2),
+            ],
             food: 0,
             destination: [0, 0],
             s: Math.random(),
@@ -36,16 +38,13 @@ function mate(p1, p2, type = 0) {
     let child = {
         x: Math.floor(Math.random() * sizeX),
         y: Math.floor(Math.random() * sizeX),
-        allele1: 0,
-        allele2: 0,
+        alleles: [],
         food: 0,
         destination: [0, 0],
         s: Math.random(),
     };
-    child.allele1 =
-        Math.floor(Math.random() * 2) == 0 ? p1.allele1 : p2.allele1;
-    child.allele2 =
-        Math.floor(Math.random() * 2) == 0 ? p1.allele2 : p2.allele2;
+    child.alleles.push(p1.alleles[Math.floor(Math.random() * 2)]);
+    child.alleles.push(p2.alleles[Math.floor(Math.random() * 2)]);
     //child.s += Math.random() <= 0.5 ? p1.s : p2.s;
     return child;
 }
@@ -104,8 +103,8 @@ function alleles() {
         dominant: 0,
     };
     for (const o of organisms) {
-        count[Object.keys(count)[o.allele1]]++;
-        count[Object.keys(count)[o.allele2]]++;
+        count[Object.keys(count)[o.alleles[0]]]++;
+        count[Object.keys(count)[o.alleles[1]]]++;
     }
     return count;
 }
@@ -175,7 +174,7 @@ function draw() {
     // draw/move organisms
     let direction = [1, -1];
     for (const o of organisms) {
-        let speed = o.allele1 == 1 || o.allele2 == 1 ? 0.5 : 0.1;
+        let speed = o.alleles[0] == 1 || o.alleles[1] == 1 ? 0.5 : 0.1;
 
         if (o.x < 0) o.x = 0;
         if (o.y < 0) o.y = 0;
