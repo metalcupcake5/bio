@@ -1,6 +1,7 @@
 let food = [];
 let time = 0;
 let organisms = [];
+let totalOrganisms = 10;
 let generation = 0;
 let speedMod = 10;
 let sizeX = 600;
@@ -14,7 +15,7 @@ for (let i = 0; i < 5; i++) {
 }
 
 function newPop() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < totalOrganisms; i++) {
         organisms.push({
             x: Math.floor(Math.random() * sizeX),
             y: Math.floor(Math.random() * sizeY),
@@ -22,34 +23,45 @@ function newPop() {
             allele2: Math.floor(Math.random() * 2),
             food: 0,
             destination: [0, 0],
-            s: Math.random()
+            s: Math.random(),
         });
     }
 }
 
 function mate(p1, p2, type = 0) {
     let child = {
-        x: 200,
-        y: 200,
+        x: Math.floor(Math.random() * sizeX),
+        y: Math.floor(Math.random() * sizeX),
         allele1: 0,
         allele2: 0,
         food: 0,
         destination: [0, 0],
+        s: Math.random(),
     };
     child.allele1 =
         Math.floor(Math.random() * 2) == 0 ? p1.allele1 : p2.allele1;
     child.allele2 =
         Math.floor(Math.random() * 2) == 0 ? p1.allele2 : p2.allele2;
-
+    //child.s += Math.random() <= 0.5 ? p1.s : p2.s;
     return child;
 }
 
 function reproduce(type = 0) {
     let parentGen = [...organisms];
+    organisms = [];
     let newGen = [];
     // hardy weinberg
     if (type == 0) {
+        food = [];
+        for (let i = 0; i < 5; i++) {
+            food.push([
+                Math.floor(Math.random() * sizeX),
+                Math.floor(Math.random() * sizeY),
+            ]);
+        }
+
         while (parentGen.length > 0) {
+            console.log("reproducing");
             let p1 = parentGen.splice(
                 Math.floor(Math.random() * parentGen.length),
                 1
@@ -58,14 +70,14 @@ function reproduce(type = 0) {
                 Math.floor(Math.random() * parentGen.length),
                 1
             )[0];
-            newGen.push(reproduce(p1, p2), reproduce(p1, p2));
+            newGen.push(mate(p1, p2), mate(p1, p2));
         }
         organisms = newGen;
     }
 
     // natural selection
     if (type == 1) {
-        parentGen = parentGen.filter(o => o.food > 0)
+        parentGen = parentGen.filter((o) => o.food > 0);
         parentGen.sort((a, b) => b.food - a.food);
     }
 }
@@ -114,16 +126,23 @@ function draw() {
         time / 30
     )}s`;
     document.getElementById("gen").innerText = `Generation: ${generation}`;
-    const a = alleles();
-    document.getElementById("a_dom").innerText = `Dominant Alleles: ${a.dominant}`
-    document.getElementById("a_rec").innerText = `Recessive Alleles: ${a.recessive}`
+    if (organisms.length >= totalOrganisms) {
+        const a = alleles();
+        document.getElementById(
+            "a_dom"
+        ).innerText = `Dominant Alleles: ${a.dominant}`;
+        document.getElementById(
+            "a_rec"
+        ).innerText = `Recessive Alleles: ${a.recessive}`;
+    }
+
     background(220);
 
     // spawn new food + draw food
     push();
     fill(255, 204, 0);
-    
-    if (time % 20 == 0) {
+
+    if (time % 35 == 0) {
         for (let i = 0; i < 10; i++) {
             food.push([
                 Math.floor(Math.random() * sizeX),
@@ -157,40 +176,39 @@ function draw() {
         o.destination = nearestFood(o.x, o.y);
         text(o.food, o.x, o.y);
         let movement = speedMod * speed * o.s;
-        console.log(movement)
+        //console.log(movement);
         if (o.x < o.destination[0]) {
             if (o.x > o.destination[0] - movement) {
-                o.x = o.destination[0]
+                o.x = o.destination[0];
+            } else {
+                o.x += movement;
             }
-            else {
-                o.x += movement
-            }
-        }
-        else if (o.x > o.destination[0]) {
+        } else if (o.x > o.destination[0]) {
             if (o.x < o.destination[0] + movement) {
-                o.x = o.destination[0]
-            }
-            else {
-                o.x -= movement
+                o.x = o.destination[0];
+            } else {
+                o.x -= movement;
             }
         }
         if (o.y < o.destination[1]) {
             if (o.y > o.destination[1] - movement) {
-                o.y = o.destination[1]
+                o.y = o.destination[1];
+            } else {
+                o.y += movement;
             }
-            else {
-                o.y += movement
-            }
-        }
-        else if (o.y > o.destination[1]) {
+        } else if (o.y > o.destination[1]) {
             if (o.y < o.destination[1] + movement) {
-                o.y = o.destination[1]
-            }
-            else {
-                o.y -= movement
+                o.y = o.destination[1];
+            } else {
+                o.y -= movement;
             }
         }
-
     }
     time++;
+    document.getElementById("gen").innerText = `Generation: ${generation}`;
+    if (Math.floor(time / 30) >= 10) {
+        reproduce();
+        generation++;
+        time = 0;
+    }
 }
