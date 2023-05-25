@@ -190,7 +190,7 @@ function draw() {
     push();
     fill(255, 204, 0);
 
-    if (time % 35 == 0) {
+    if (time % 10 == 0) {
         for (let i = 0; i < 10; i++) {
             food.push([
                 Math.floor(Math.random() * sizeX),
