@@ -47,7 +47,7 @@ function mate(p1, p2, type = 0) {
     };
     child.alleles.push(p1.alleles[Math.floor(Math.random() * 2)]);
     child.alleles.push(p2.alleles[Math.floor(Math.random() * 2)]);
-    child.s = Math.random() < 0.5 ? p1.s : p2.s;
+    child.s = Math.random();
     //child.s += Math.random() <= 0.5 ? p1.s : p2.s;
     return child;
 }
