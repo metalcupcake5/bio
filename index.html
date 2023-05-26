@@ -30,9 +30,17 @@
                 <button onClick="switchEvolutionType()">
                     switch evolution type
                 </button>
-                <span id="a_dom"></span>
-                <span id="a_rec"></span>
+                <span id="a-dom"></span>
+                <span id="a-rec"></span>
+                <span id="hom-dom"></span>
+                <span id="hom-rec"></span>
+                <span id="het"></span>
                 <span id="reproType">Reproduction Type: Hardy Weinberg</span>
+                <div id="hw-stats">
+                    <span>hardy weinberg stats</span><br />
+                    <span id="hw-p"></span><br />
+                    <span id="hw-q"></span>
+                </div>
             </div>
             <div id="canvas"></div>
             <div class="chart">
@@ -52,6 +60,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            min-width: 250px;
         }
 
         .chart {

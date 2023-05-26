@@ -113,6 +113,24 @@ function alleles() {
     return count;
 }
 
+function genotypes() {
+    let g = {
+        homo_dom: 0,
+        het: 0,
+        homo_rec: 0,
+    };
+    for (const o of organisms) {
+        if (o.alleles[0] == o.alleles[1]) {
+            if (o.alleles[0] == 0) g.homo_rec++;
+            else g.homo_dom++;
+        } else {
+            g.het++;
+        }
+    }
+
+    return g;
+}
+
 function distance(x, y, x1, y1) {
     return Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
 }
@@ -140,6 +158,29 @@ function setup() {
     frameRate(30);
 
     const a = alleles();
+
+    document.getElementById("hw-p").innerText = `p²: ${
+        Math.round((a.dominant / (totalOrganisms * 2)) * 100) / 100
+    }`;
+    document.getElementById("hw-q").innerText = `q²: ${
+        Math.round((a.recessive / (totalOrganisms * 2)) * 100) / 100
+    }`;
+
+    document.getElementById(
+        "a-dom"
+    ).innerText = `Dominant Alleles: ${a.dominant}`;
+    document.getElementById(
+        "a-rec"
+    ).innerText = `Recessive Alleles: ${a.recessive}`;
+
+    const g = genotypes();
+    document.getElementById(
+        "hom-dom"
+    ).innerText = `Homozygous Dominant: ${g.homo_dom}`;
+    document.getElementById(
+        "hom-rec"
+    ).innerText = `Homozygous Recessive: ${g.homo_rec}`;
+    document.getElementById("het").innerText = `Heterozygous: ${g.het}`;
 
     alleleChart = new Chart(document.getElementById("chart-gens"), {
         type: "line",
@@ -194,15 +235,6 @@ function draw() {
         time / 30
     )}s`;
     document.getElementById("gen").innerText = `Generation: ${generation}`;
-    if (organisms.length >= totalOrganisms) {
-        const a = alleles();
-        document.getElementById(
-            "a_dom"
-        ).innerText = `Dominant Alleles: ${a.dominant}`;
-        document.getElementById(
-            "a_rec"
-        ).innerText = `Recessive Alleles: ${a.recessive}`;
-    }
 
     background(220);
 
@@ -288,24 +320,68 @@ function draw() {
         alleleChart.update();
         performanceChart.data.datasets[0].data = Array(totalOrganisms).fill(0);
         performanceChart.update();
+
+        document.getElementById(
+            "a-dom"
+        ).innerText = `Dominant Alleles: ${a.dominant}`;
+        document.getElementById(
+            "a-rec"
+        ).innerText = `Recessive Alleles: ${a.recessive}`;
+
+        const g = genotypes();
+        document.getElementById(
+            "hom-dom"
+        ).innerText = `Homozygous Dominant: ${g.homo_dom}`;
+        document.getElementById(
+            "hom-rec"
+        ).innerText = `Homozygous Recessive: ${g.homo_rec}`;
+        document.getElementById("het").innerText = `Heterozygous: ${g.het}`;
     }
 }
 
 function switchEvolutionType() {
-    let hwRadio = document.getElementById("hw").checked;
-    if (hwRadio) {
-        reproductionType = 0;
-        document.getElementById("reproType").innerText =
-            "Reproduction Type: Hardy Weinberg";
-    } else {
-        reproductionType = 1;
-        document.getElementById("reproType").innerText =
-            "Reproduction Type: Natural Selection";
-    }
     reset();
     alleleChart.data.labels = [0];
     const a = alleles();
     alleleChart.data.datasets[0].data = [a.dominant];
     alleleChart.data.datasets[1].data = [a.recessive];
     alleleChart.update();
+
+    performanceChart.data.datasets[0].data = Array(totalOrganisms).fill(0);
+    performanceChart.update();
+
+    document.getElementById(
+        "a-dom"
+    ).innerText = `Dominant Alleles: ${a.dominant}`;
+    document.getElementById(
+        "a-rec"
+    ).innerText = `Recessive Alleles: ${a.recessive}`;
+
+    const g = genotypes();
+    document.getElementById(
+        "hom-dom"
+    ).innerText = `Homozygous Dominant: ${g.homo_dom}`;
+    document.getElementById(
+        "hom-rec"
+    ).innerText = `Homozygous Recessive: ${g.homo_rec}`;
+    document.getElementById("het").innerText = `Heterozygous: ${g.het}`;
+
+    let hwRadio = document.getElementById("hw").checked;
+    if (hwRadio) {
+        reproductionType = 0;
+        document.getElementById("reproType").innerText =
+            "Reproduction Type: Hardy Weinberg";
+        document.getElementById("hw-stats").style.display = "block";
+        document.getElementById("hw-p").innerText = `p²: ${
+            (o.dominant / o.totalOrganisms) * 2
+        }`;
+        document.getElementById("hw-q").innerText = `q²: ${
+            (o.recessive / o.totalOrganisms) * 2
+        }`;
+    } else {
+        reproductionType = 1;
+        document.getElementById("reproType").innerText =
+            "Reproduction Type: Natural Selection";
+        document.getElementById("hw-stats").style.display = "none";
+    }
 }
