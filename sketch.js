@@ -35,6 +35,8 @@ function reset() {
             s: Math.random(),
         });
     }
+
+    document.getElementById("gen").innerText = `Generation: ${generation}`;
 }
 
 function mate(p1, p2, type = 0) {
@@ -234,7 +236,6 @@ function draw() {
     document.getElementById("time").innerText = `Generation Time: ${Math.floor(
         time / 30
     )}s`;
-    document.getElementById("gen").innerText = `Generation: ${generation}`;
 
     background(220);
 
@@ -307,11 +308,14 @@ function draw() {
         }
     }
     time++;
-    document.getElementById("gen").innerText = `Generation: ${generation}`;
-    if (Math.floor(time / 30) >= 10) {
+    if (
+        document.getElementById("evolve").checked &&
+        Math.floor(time / 30) >= 10
+    ) {
         reproduce(reproductionType);
         console.log(reproductionType);
         generation++;
+        document.getElementById("gen").innerText = `Generation: ${generation}`;
         time = 0;
         const a = alleles();
         alleleChart.data.datasets[0].data.push(a.dominant);
