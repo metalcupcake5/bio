@@ -8,7 +8,8 @@ let sizeX = 600;
 let sizeY = 600;
 let reproductionType = 0;
 let alleleHistory = [];
-let chart;
+let alleleChart;
+let performanceChart;
 
 function reset() {
     food = [];
@@ -139,9 +140,8 @@ function setup() {
     frameRate(30);
 
     const a = alleles();
-    const ctx = document.getElementById("chart");
 
-    chart = new Chart(ctx, {
+    alleleChart = new Chart(document.getElementById("chart-gens"), {
         type: "line",
         data: {
             labels: [0],
@@ -155,6 +155,26 @@ function setup() {
                     label: "recessive",
                     data: [a.recessive],
                     borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+
+    performanceChart = new Chart(document.getElementById("chart-perf"), {
+        type: "bar",
+        data: {
+            labels: [...Array(totalOrganisms).keys()],
+            datasets: [
+                {
+                    label: "food",
+                    data: Array(totalOrganisms).fill(0),
                 },
             ],
         },
@@ -219,6 +239,8 @@ function draw() {
             if (distance(o.x, o.y, food[i][0], food[i][1]) < 5) {
                 food.splice(i, 1);
                 o.food++;
+                performanceChart.data.datasets[0].data[organisms.indexOf(o)]++;
+                performanceChart.update();
             }
         }
         o.destination = nearestFood(o.x, o.y);
@@ -260,10 +282,12 @@ function draw() {
         generation++;
         time = 0;
         const a = alleles();
-        chart.data.datasets[0].data.push(a.dominant);
-        chart.data.datasets[1].data.push(a.recessive);
-        chart.data.labels.push(generation);
-        chart.update();
+        alleleChart.data.datasets[0].data.push(a.dominant);
+        alleleChart.data.datasets[1].data.push(a.recessive);
+        alleleChart.data.labels.push(generation);
+        alleleChart.update();
+        performanceChart.data.datasets[0].data = Array(totalOrganisms).fill(0);
+        performanceChart.update();
     }
 }
 
@@ -279,9 +303,9 @@ function switchEvolutionType() {
             "Reproduction Type: Natural Selection";
     }
     reset();
-    chart.data.labels = [0];
+    alleleChart.data.labels = [0];
     const a = alleles();
-    chart.data.datasets[0].data = [a.dominant];
-    chart.data.datasets[1].data = [a.recessive];
-    chart.update();
+    alleleChart.data.datasets[0].data = [a.dominant];
+    alleleChart.data.datasets[1].data = [a.recessive];
+    alleleChart.update();
 }
