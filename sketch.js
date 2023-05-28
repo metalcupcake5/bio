@@ -1,7 +1,7 @@
 let food = [];
 let time = 0;
 let organisms = [];
-let totalOrganisms = 30;
+let totalOrganisms = 100;
 let generation = 0;
 let speedMod = 10;
 let sizeX = 600;
@@ -244,7 +244,7 @@ function draw() {
     fill(255, 204, 0);
 
     if (time % 10 == 0) {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < Math.floor(totalOrganisms/3); i++) {
             food.push([
                 Math.floor(Math.random() * sizeX),
                 Math.floor(Math.random() * sizeY),
