@@ -1,11 +1,11 @@
 let food = [];
 let time = 0;
 let organisms = [];
-let totalOrganisms = 200;
+let totalOrganisms = 100;
 let generation = 0;
 let speedMod = 20;
-let sizeX = 1000;
-let sizeY = 1000;
+let sizeX = 400;
+let sizeY = 400;
 let reproductionType = 0;
 let alleleHistory = [];
 let alleleChart;
