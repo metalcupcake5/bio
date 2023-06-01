@@ -1,11 +1,11 @@
 let food = [];
 let time = 0;
 let organisms = [];
-let totalOrganisms = 100;
+let totalOrganisms = 200;
 let generation = 0;
-let speedMod = 10;
-let sizeX = 600;
-let sizeY = 600;
+let speedMod = 20;
+let sizeX = 1000;
+let sizeY = 1000;
 let reproductionType = 0;
 let alleleHistory = [];
 let alleleChart;
@@ -160,13 +160,6 @@ function setup() {
     frameRate(30);
 
     const a = alleles();
-
-    document.getElementById("hw-p").innerText = `p²: ${
-        Math.round((a.dominant / (totalOrganisms * 2)) * 100) / 100
-    }`;
-    document.getElementById("hw-q").innerText = `q²: ${
-        Math.round((a.recessive / (totalOrganisms * 2)) * 100) / 100
-    }`;
 
     document.getElementById(
         "a-dom"
@@ -375,17 +368,9 @@ function switchEvolutionType() {
         reproductionType = 0;
         document.getElementById("reproType").innerText =
             "Reproduction Type: Hardy Weinberg";
-        document.getElementById("hw-stats").style.display = "block";
-        document.getElementById("hw-p").innerText = `p²: ${
-            (o.dominant / o.totalOrganisms) * 2
-        }`;
-        document.getElementById("hw-q").innerText = `q²: ${
-            (o.recessive / o.totalOrganisms) * 2
-        }`;
     } else {
         reproductionType = 1;
         document.getElementById("reproType").innerText =
             "Reproduction Type: Natural Selection";
-        document.getElementById("hw-stats").style.display = "none";
     }
 }
